@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Spyder workspace
+.spyderworkspace
+
+# Problems ressources
+resources/*
+
 # C extensions
 *.so
 
