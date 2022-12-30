@@ -85,6 +85,58 @@ def erathostenes_sieve(maxp):
             primes.append(2*i+1)
     return primes, sieve
 
+class ErathostenesSieve:
+    def __init__(self, max_prime=100_000, min_step=10_000):
+        self.min_step = min_step
+        # sieve[i] == True  means that 2i+1 is prime
+        self.primes = [2]
+        self.sieve = [False]
+        # Current state of the computation
+        self.sieve_size = 1
+        self.max_prime = 2
+        self.stop = 0
+        # Extend the sieve
+        self.extend(max_prime)
+    
+    def extend(self, new_max_prime):
+        if new_max_prime <= self.max_prime:
+            return
+        # Retain old values
+        old_sieve_size = self.sieve_size
+        old_max_prime = self.max_prime
+        old_stop = self.stop
+        # Increase max_prime by a minimum step
+        self.max_prime = max(new_max_prime, old_max_prime+self.min_step)
+        self.sieve_size = 1+self.max_prime//2
+        # Extend the sieve
+        self.sieve = [ i >= old_sieve_size or self.sieve[i] for i in range(self.sieve_size)  ]
+        self.stop = (math.isqrt(self.max_prime)-1) // 2
+        # Apply already found primes to the new sieve
+        for p in self.primes[1:]:
+            if p > 2*old_stop+1:
+                break
+            for k in range( 1+2*((old_max_prime // p + 1)//2), self.max_prime // p + 1, 2):
+                self.sieve[ (p*k-1)//2 ] = False
+        # Proceed with the sieve algorithm
+        for i in range(old_stop+1, self.stop+1):
+            if self.sieve[i]:
+                p = 2*i+1
+                if p >= old_max_prime:
+                    self.primes.append(p)
+                for k in range(p, self.max_prime // p + 1, 2):
+                    self.sieve[ (p*k-1)//2 ] = False
+        for i in range( max(old_sieve_size,self.stop+1), self.sieve_size):
+            if self.sieve[i]:
+                self.primes.append(2*i+1)
+    
+    def is_prime(self, n):
+        if n%2 == 0 or n < 3:
+            return n == 2
+        self.extend(n)
+        return self.sieve[n//2]
+
+
+
 # Returns u,v,gcd(a,b) such that a.u + b.v = gcd(a,b)
 def extended_euclid(a,b):
     r0 = abs(a)
