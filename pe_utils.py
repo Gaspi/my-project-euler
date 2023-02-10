@@ -134,6 +134,14 @@ class ErathostenesSieve:
             return n == 2
         self.extend(n)
         return self.sieve[n//2]
+    
+    def all_primes(self):
+        yield 2
+        n = 3
+        while True:
+            if self.is_prime(n):
+                yield n
+            n += 2
 
 
 
@@ -153,12 +161,22 @@ def extended_euclid(a,b):
         (t0, t1) = (t1, t0 - q*t1)
     return (s0,t0,r0)
 
+def perfect_square(x):
+    res = math.isqrt(x)
+    return res if res ** 2 == x else None
 
 def perfect_cube(x):
     x = abs(x)
     res = int(round(x ** (1. / 3)))
     if res ** 3 == x:
         return res
+
+def rev_int_digits(n):
+    res = 0
+    while n:
+        res = 10 * res + (n%10)
+        n //= 10
+    return res
 
 
 # Assumes a>0 and gcd(a,m) = 1
